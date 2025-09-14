@@ -1,20 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import GoogleAuthButton from "@/components/GoogleAuthButton";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       const response = await fetch("/api/login", {
@@ -26,25 +27,25 @@ export default function LoginPage() {
           username,
           password,
         }),
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         // Store auth token if provided by your external API
         if (data.access_token) {
-          localStorage.setItem("authToken", data.access_token)
+          localStorage.setItem("authToken", data.access_token);
         }
-        router.push("/")
+        router.push("/");
       } else {
-        const data = await response.json()
-        setError(data.error || "Invalid credentials")
+        const data = await response.json();
+        setError(data.error || "Invalid credentials");
       }
     } catch {
-      setError("An error occurred. Please try again.")
+      setError("An error occurred. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -62,6 +63,9 @@ export default function LoginPage() {
               create a new account
             </Link>
           </p>
+          <div className="mt-4">
+            <GoogleAuthButton />
+          </div>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
@@ -115,5 +119,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
